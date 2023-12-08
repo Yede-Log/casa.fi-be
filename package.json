@@ -1,5 +1,5 @@
 {
-  "name": "otaas-ts-api-template-repo",
+  "name": "casa.fi",
   "version": "1.0.0",
   "description": "Typescript based API template",
   "main": "index.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OTaaS/otaas-ts-api-template-repo.git"
+    "url": "git@github.com:Yede-Log/casa.fi-be.git"
   },
   "author": "Sangat Das",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/OTaaS/otaas-ts-api-template-repo/issues"
+    "url": "git@github.com:Yede-Log/casa.fi-be.git/issues"
   },
-  "homepage": "https://github.com/OTaaS/otaas-ts-api-template-repo#readme",
+  "homepage": "git@github.com:Yede-Log/casa.fi-be.git#readme",
   "dependencies": {
     "@pushprotocol/restapi": "^1.4.44",
     "body-parser": "^1.19.0",
