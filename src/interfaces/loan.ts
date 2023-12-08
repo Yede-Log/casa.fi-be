@@ -8,6 +8,8 @@ export interface Loan {
     loanOffer: string,
     loanApplication: mongoose.Types.ObjectId,
     status: LoanStatus,
+    chainId: number,
+    assetId: number 
     createdAt: Date,
     updatedAt: Date,
 }

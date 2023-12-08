@@ -12,6 +12,7 @@ export interface LoanOffer {
     acceptance: number,
     documentsRequired: string[],
     description: string,
+    chainId: number,
     createdAt: Date,
     updatedAt: Date,
 }
