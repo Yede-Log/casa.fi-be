@@ -2,7 +2,7 @@ import mongoose from "../config/database"
 
 export interface LoanOffer {
     _id: mongoose.Types.ObjectId,
-    lender: mongoose.Types.ObjectId,
+    lender: string,
     institutionType: string,
     features: string[],
     interestRate: number,
