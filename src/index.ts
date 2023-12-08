@@ -14,6 +14,8 @@ import authRoutes from "./routes/auth.route";
 import loanOfferRoutes from "./routes/loan.offers.route";
 import loanApplicationRoutes from "./routes/loan.application.route";
 import loanRoutes from "./routes/Loan.route";
+import userRoutes from "./routes/user.route";
+
 import { poll } from "./services/listener";
 import { LOAN_REGISTRY_CONTRACT_ABI } from "./config/ethers";
 import { addChain } from "./services/chain";
@@ -47,7 +49,7 @@ app.use("/api/auth", authRoutes)                                /** test done */
 app.use("/api/loan-offers", loanOfferRoutes)                    /** test done */
 app.use("/api/loan-application", loanApplicationRoutes);        /** test done */
 app.use("/api/loan", loanRoutes);                               /** test done */
-
+app.use("/api/user", userRoutes);
 app.get("/api/healthcheck", (req, res) => {
   let message:string = "Hello world";
   return res.status(200).json(message);

@@ -52,3 +52,13 @@ export const deleteLoanApplication = async (id: string) => {
         throw err;
     }
 };
+
+export const getLoanApplicationByUser = async (borrower: string) => {
+    try {
+        let loanApplication = await mongoose.connection.db.collection(LOAN_APPLICATIONS_COLLECTION).findOne({ borrower:borrower });
+        return loanApplication as unknown as LoanApplication;
+    } catch (err:any) {
+        console.error(`Error in creating loan: \n${err}`);
+        throw err;
+    }
+};

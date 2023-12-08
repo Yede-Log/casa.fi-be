@@ -9,6 +9,7 @@ const ObjectId = mongoose.Types.ObjectId
 export const getAllUser = async () => {
     try {
         let users = await mongoose.connection.db.collection(USERS_COLLECTION).find();
+        console.log(users);
         return users.toArray() as unknown as User[];
     } catch (err:any) {
         console.error(`Error in fetching all loans: \n${err}`);
