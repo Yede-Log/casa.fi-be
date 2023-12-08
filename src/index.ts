@@ -43,10 +43,10 @@ app.use(
   })
 )
 
-app.use("/auth", authRoutes)                                /** test done */
-app.use("/loan-offers", loanOfferRoutes)                    /** test done */
-app.use("/loan-application", loanApplicationRoutes);        /** test done */
-app.use("/loan", loanRoutes);                               /** test done */
+app.use("/api/auth", authRoutes)                                /** test done */
+app.use("/api/loan-offers", loanOfferRoutes)                    /** test done */
+app.use("/api/loan-application", loanApplicationRoutes);        /** test done */
+app.use("/api/loan", loanRoutes);                               /** test done */
 
 app.get("/api/healthcheck", (req, res) => {
   let message:string = "Hello world";
