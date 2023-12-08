@@ -33,9 +33,7 @@ export const processLogs = async (logs: LogDescription[]) => {
                 body = `Loan Account has been created: ** ${loanAccountContract.address} **.`;
                 await sendNotification([lender], title, body);
                 
-                // updating the status to new
-                await mongoose.connection.db.collection(LOANS_COLLECTION).updateOne({ loanAccount: `${loanAccountContract.address}` }, {$set: { status: "NEW"}});
-
+                
                 break;
             case "LoanDisbursed":
                 amount = log.args[1].toNumber();

@@ -3,9 +3,9 @@ import mongoose from "../config/database";
 export interface Loan {
     _id: mongoose.Types.ObjectId,
     loanAccount: string,
-    lender: mongoose.Types.ObjectId,
-    borrower: mongoose.Types.ObjectId,
-    loanOffer: string,
+    lender: string,
+    borrower: string,
+    loanOffer: mongoose.Types.ObjectId,
     loanApplication: mongoose.Types.ObjectId,
     status: LoanStatus,
     chainId: number,
