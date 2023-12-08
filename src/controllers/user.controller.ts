@@ -1,11 +1,12 @@
 /** Required External Modules */
-import { Request, Response } from "express";
+import { Request, Response, application } from "express";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { getAllUser, getUserByID } from "../services/user";
 import { getLoanApplicationByID, getLoanApplicationByUser } from "../services/loanAppilcation";
 import { getLoanOfferByID } from "../services/loanOffer";
-/** Required App Modules */
+import { MyLoan } from "../interfaces/myLoan";
+/**  Required App Modules */
 dotenv.config();
 
 
@@ -35,17 +36,21 @@ export const getUserByIDController = async (req: Request, res: Response) => {
 
 export const getMyLoansController = async (req: Request, res: Response) => {
     try {
-        const loanApplication = await getLoanApplicationByUser(req.params.id);
-        const loan_offer = await getLoanOfferByID(String(loanApplication.loan_offer));
-        const myLoan = {
-            application_id: loanApplication._id,
-            lender : loan_offer.lender,
-            interest_rate: loan_offer.interestRate,
-            amount: loanApplication.amount,
-            status: loanApplication.status,
-            chainId: loanApplication.chainId   
+        const loanApplications = await getLoanApplicationByUser(req.params.id);
+        let myLoans:MyLoan[] = [];
+        
+        for(let i = 0; i < loanApplications.length; i++) {
+            let loan_offer = await getLoanOfferByID(String(loanApplications[i].loan_offer));
+            myLoans.push({
+                application_id: loanApplications[i]._id,
+                lender : loan_offer.lender,
+                interest_rate: loan_offer.interestRate,
+                amount: loanApplications[i].amount,
+                status: loanApplications[i].status,
+                chainId: loanApplications[i].chainId
+            })
         }
-        return res.status(200).json(myLoan);
+        return res.status(200).json(myLoans as unknown as MyLoan[]);
     } catch (error:any) {
         
     }
