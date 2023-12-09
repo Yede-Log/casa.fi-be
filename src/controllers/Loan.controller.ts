@@ -42,10 +42,17 @@ export const getAllLoanController = async (req: Request, res: Response) => {
 export const getLoanByIDController = async (req: Request, res: Response) => {
     try {
         const loan = await getLoanByID(req.params.id);
+        const loan_offer = await getLoanOfferByID(String(loan.loanOffer));
+        let modified_loan = {
+            ...loan,
+            interestRate: loan_offer.interestRate,
+            maxTenure: loan_offer.maxTenure,
+            maxAmount: loan_offer.maxAmount,
+        }
         if (!loan) {
             return res.status(404).json({ message: 'Loan not found' });
         }
-        return res.status(200).json(loan);
+        return res.status(200).json(modified_loan);
     } catch (error:any) {
           return res.status(400).json({ error: error.message });
       }
