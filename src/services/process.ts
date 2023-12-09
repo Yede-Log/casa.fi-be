@@ -101,7 +101,7 @@ export const processLogs = async (logs: LogDescription[]) => {
                     account: loanAccountContract.address,
                     time_period: loanApplication.tenure,
                     payment_interval,
-                    interest_rate:loanOffer.interestRate,
+                    interest_rate:loanOffer.interestRate * 100,
                 }
                 await sendNotification([lender], title, JSON.stringify(body));                
 
