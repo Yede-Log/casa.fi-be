@@ -22,7 +22,7 @@ export const createLoanOfferController = async (req: Request, res: Response) => 
 export const getAllLoanOfferController = async (req: Request, res: Response) => {
     try {
         
-        const loanOffers = await getAllLoanOffer(String(req.query.address));
+        const loanOffers = await getAllLoanOffer();
         return res.status(200).json(loanOffers);
     } catch (error:any) {
         console.error(error);

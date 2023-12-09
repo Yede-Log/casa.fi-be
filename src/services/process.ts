@@ -76,8 +76,7 @@ export const processLogs = async (logs: LogDescription[]) => {
                     amount: disbursed_token_asset["_disbursed_amount"].toNumber(),
                     account: loanAccountContract.address,
                     time_period: loanApplication.tenure,
-                    payment_interval,
-                    interest_rate
+                    payment_interval
                 }
                 await sendNotification([lender], title, JSON.stringify(body));
 
@@ -98,7 +97,10 @@ export const processLogs = async (logs: LogDescription[]) => {
                     type: "disburse",
                     message: message,
                     amount: loanApplication.amount,
-                    account: loanAccountContract.address
+                    account: loanAccountContract.address,
+                    time_period: loanApplication.tenure,
+                    payment_interval,
+                    interest_rate
                 }
                 await sendNotification([lender], title, JSON.stringify(body));                
 
@@ -119,7 +121,6 @@ export const processLogs = async (logs: LogDescription[]) => {
 
                 break;
             case "LoanPayment":
-                amount = log.args[1].toNumber();
                 title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT: ${loanAccountContract.address}`;
                 body = `Loan repayment received: ${amount} in account: **${loanAccountContract.address}**.`;
                 await sendNotification([borrower, lender], title, body);
