@@ -17,16 +17,17 @@ export const processLogs = async (logs: LogDescription[]) => {
         let lender = await loanAccountContract._lender();
         let assetOwner = await loanAccountContract._asset_owner();
         let mortgaged_asset = await loanAccountContract.get_mortgaged_asset();
+        let disbursed_asset = await loanAccountContract.get_disbursed_asset();
         console.log(mortgaged_asset);
         let title, body, amount;
         switch(event) {
             case "CloseLoanAccount":
                 title = `IMPORTANT MESSAGE FOR ${borrower}`;
-                body = `You have defaulted on your loan: ** ${loanAccountContract.address} **.
+                body = `You have defaulted on your loan: **${loanAccountContract.address}**.
                 \nMortgaged Asset has been transferred to your lender's acount: ${lender}.`;
                 await sendNotification([borrower], title, body);
                 title = `IMPORTANT MESSAGE FOR ${lender}`;
-                body = `Loan Account has been closed: ** ${loanAccountContract.address} **.
+                body = `Loan Account has been closed: **${loanAccountContract.address}**.
                 \nMortgaged Asset has been transferred to your account: ${lender}.`;
                 await sendNotification([lender], title, body);
                 await updateLoanStatus(`${loanAccountContract.address}`,"COMPLETED");
@@ -34,19 +35,19 @@ export const processLogs = async (logs: LogDescription[]) => {
                 break;
             case "LoanAccountCreated":
                 title = `IMPORTANT MESSAGE FROM Loan Account ${borrower}`;
-                body = `Loan Account has been created: ** ${loanAccountContract.address} **.`;
+                body = `Loan Account has been created: **${loanAccountContract.address}**.`;
                 await sendNotification([borrower], title, body);
                 title = `IMPORTANT MESSAGE FOR ${lender}`;
-                body = `Loan Account has been created: ** ${loanAccountContract.address} **.`;
+                body = `Loan Account has been created: **${loanAccountContract.address}**.`;
                 await sendNotification([lender], title, body);
                 
                 // sending notifications for approval to all 3 stakeholders
                 title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT`;
-                body = `Kindly approve the above contract for loan disbursement of ** ${loanAccountContract.address} **`
+                body = `Kindly approve the above contract for loan disbursement of **${loanAccountContract.address}**`
                 await sendNotification([borrower, lender], title, body);
                 
                 title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT ${loanAccountContract.address}`;
-                body = `Kindly approve the above contract for your asset ** ${mortgaged_asset._token_id} **`;
+                body = `Kindly approve the above contract for your asset **${mortgaged_asset._token_id}**`;
                 await sendNotification([assetOwner], title, body);
 
                 // creation of loan account
@@ -57,9 +58,9 @@ export const processLogs = async (logs: LogDescription[]) => {
                     lender,
                     borrower,
                     loanOffer:loanApplication.loan_offer,
-                    loanApplication: loanApplication._id,
+                    loanApplication: String(loanApplication._id),
                     status: "NEW",
-                    chainId: loanApplication.chainId,
+                    chainId: Number(loanApplication.chainId),
                     assetId: mortgaged_asset["_token_id"].toNumber(), 
                     createdAt: new Date(),
                     updatedAt: new Date(),
@@ -69,7 +70,7 @@ export const processLogs = async (logs: LogDescription[]) => {
             case "LoanDisbursed":
                 amount = log.args[1].toNumber();
                 title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT: ${loanAccountContract.address}`;
-                body = `Loan of amount: ${amount} has been successfully disbursed from account: ** ${loanAccountContract.address} **.`;
+                body = `Loan of amount: ${amount} has been successfully disbursed from account: **${loanAccountContract.address}**.`;
                 await sendNotification([borrower, lender], title, body);
                 
                 // updating status in progress
@@ -79,13 +80,13 @@ export const processLogs = async (logs: LogDescription[]) => {
                 break;
             case "LoanPayment":
                 title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT: ${loanAccountContract.address}`;
-                body = `Loan repayment received: ${amount} in account: ** ${loanAccountContract.address} **.`;
+                body = `Loan repayment received: ${amount} in account: **${loanAccountContract.address}**.`;
                 await sendNotification([borrower, lender], title, body);
                 break;
             case "LoanPaymentReminder":
                 amount = log.args[1].toNumber();
                 title = `IMPORTANT MESSAGE FOR ${borrower}`;
-                body = `Please approve Loan Account: ** ${loanAccountContract.address} ** for amount: ** ${amount} **.
+                body = `Please approve Loan Account: ** ${loanAccountContract.address} ** for amount: **${amount}**.
                 \nMaintain sufficient balance for debit.`;
                 await sendNotification([borrower], title, body);
                 break;
