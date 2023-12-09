@@ -7,6 +7,11 @@ export const getAllChains = () => {
     return chains.toArray() as unknown as Chain[];
 }
 
+export const getChain = (chainId: number) => {
+    const chains = mongoose.connection.db.collection(CHAINS_COLLECTION).findOne({ chainId : chainId});
+    return chains as unknown as Chain;
+}
+
 export const addChain = async (chain: Chain) => {
     await mongoose.connection.db.collection(CHAINS_COLLECTION).insertOne(chain);
 }

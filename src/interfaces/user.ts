@@ -1,5 +1,6 @@
 export interface User {
     email:string;
     address: string,
-    isLender: boolean
+    isLender: boolean,
+    isVerified: boolean,
 }

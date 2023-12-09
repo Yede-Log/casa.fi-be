@@ -26,4 +26,15 @@ export const getUserByID = async (id: string) => {
         throw err;
     }
 };
+
+export const updateUserIsVerified = async (address: string, isVerified: boolean) => {
+    try {
+        await mongoose.connection.db.collection(USERS_COLLECTION).updateOne({ address: address}, {$set: {isVerified: isVerified}});
+        let updatedUser = await mongoose.connection.db.collection(USERS_COLLECTION).findOne({address: address});
+        return updatedUser as unknown as User;
+    } catch (err:any) {
+        console.error(`Error in fetching the user: \n${err}`);
+        throw err;
+    }
+};
   

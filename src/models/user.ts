@@ -24,6 +24,10 @@ const UserSchema: Schema = new Schema({
     isLender: {
         type: Boolean,
         default: false
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 })
 

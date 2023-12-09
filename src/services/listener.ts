@@ -25,10 +25,12 @@ export const poll = async (address: string, abi: ethers.ContractInterface, inter
     const contract = new ethers.Contract(address, abi);
     let fromBlock = fromBlockNumber ?? await provider.getBlockNumber();
     setInterval(async () => {
+        let latestBlock = await getProvider().getBlockNumber()
         let toBlock = fromBlock + 10;
         let logs = (await getEventsByContract(contract, fromBlock, toBlock)).map((log) => { return contract.interface.parseLog(log) });
         if(logs.length > 0) {
             processLogs(logs);
         }   
+        fromBlock = latestBlock;
     }, interval);
 }

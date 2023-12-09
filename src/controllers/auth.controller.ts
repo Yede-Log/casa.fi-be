@@ -51,7 +51,9 @@ export const Verification = async (req: Request, res: Response) => {
         if(userExist === null){
             await User.create({
                 email,
-                address
+                address,
+                isLender:false,
+                isVerified:false
             });
 
             userExist = await User.findOne({ email });
@@ -61,7 +63,9 @@ export const Verification = async (req: Request, res: Response) => {
         const jwtObject = { 
             _id: userExist._id,
             email: userExist.email,
-            address: userExist.address
+            address: userExist.address,
+            isLender: userExist.isLender,
+            isVerified: userExist.isVerified
         }
 
         const token = jwt.sign(jwtObject, `${process.env.AUTH_SECRET}`, { expiresIn: "7d"})

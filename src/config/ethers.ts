@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 dotenv.config();
 
 export const getProvider = () => {
-    return new ethers.providers.JsonRpcProvider(process.env.HTTPS_PROVIDER_URL);
+    return new ethers.providers.JsonRpcProvider("https://polygon-mumbai.blockpi.network/v1/rpc/public");
 }
 
 export const getSigner = () => {

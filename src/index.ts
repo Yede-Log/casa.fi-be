@@ -7,7 +7,7 @@ import { default as Moralis } from "moralis";
 
 /** Required App Modules */
 // import Logger from "./config/logger";
-import mongoose, { connectDB } from "./config/database";
+import mongoose, { CHAINS_COLLECTION, connectDB } from "./config/database";
 
 /** Required Routes Module */
 import authRoutes from "./routes/auth.route";
@@ -17,15 +17,14 @@ import loanRoutes from "./routes/Loan.route";
 import userRoutes from "./routes/user.route";
 
 import { poll } from "./services/listener";
-import { LOAN_REGISTRY_CONTRACT_ABI } from "./config/ethers";
-import { addChain, getAllChains } from "./services/chain";
+import { LOAN_REGISTRY_CONTRACT_ABI, getProvider } from "./config/ethers";
+import { addChain, getAllChains, getChain } from "./services/chain";
 import { sendNotification } from "./services/notififcations";
-
 const lighthouse_api_key = process.env.LIGHT_HOUSE
 
 dotenv.config();
 
-connectDB();
+
 
 const PORT: number = parseInt(process.env.PORT ?? "8080");
 
@@ -90,6 +89,8 @@ app.get("/api/chains", async(req: Request, res: Response) => {
 
 /** Server Activation */
 const StartServer = async() => {
+  await connectDB();
+
   await Moralis.start({
     apiKey: process.env.MORALIS_API_KEY,
   });
@@ -98,7 +99,12 @@ const StartServer = async() => {
     console.log(`Listening on port ${PORT}`);
   });
 
-//   await poll("0x7b0dcc7bff658dea11397f5a4ed5f96e0215fe82", LOAN_REGISTRY_CONTRACT_ABI, 10000, 43165317);
+  const name="LoanRegistry"
+  const chain = await getChain(80001);
+  const contractIndex = await chain.contracts.findIndex((chainContract) => chainContract.name === name);
+
+  let latestBlock = await getProvider().getBlockNumber()
+  await poll(chain.contracts[contractIndex].address, LOAN_REGISTRY_CONTRACT_ABI, 10000, latestBlock);
 
 }
 
