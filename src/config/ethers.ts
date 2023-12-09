@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 dotenv.config();
 
 export const getProvider = () => {
-    return new ethers.providers.JsonRpcProvider("https://polygon-mumbai.blockpi.network/v1/rpc/public");
+    return new ethers.providers.JsonRpcProvider("https://polygon-mumbai-pokt.nodies.app");
 }
 
 export const getSigner = () => {

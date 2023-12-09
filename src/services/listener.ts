@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import logger from "../config/logger";
 import { getProvider } from "../config/ethers";
 import { processLogs } from "./process";
 
@@ -9,9 +8,8 @@ export const getEventsByContract = async (contract: ethers.Contract, fromBlock: 
         const filter = { address: contract.address, fromBlock: fromBlock, toBlock: toBlock, topics: [] };
         let logs = await provider.getLogs(filter);
         console.log(
-            `Logs Recieved from ${contract.address} on 
-            ${(await provider.getNetwork()).name} between 
-            ${fromBlock} and ${toBlock}:\n${JSON.stringify(logs)}`
+            `Logs Recieved from ${contract.address} on ${(await provider.getNetwork()).name} between ${fromBlock} and ${toBlock}:
+            ${JSON.stringify(logs)}`
         );
         return logs;
     } catch (err) {
