@@ -20,7 +20,7 @@ export const processLogs = async (logs: LogDescription[]) => {
         let mortgaged_asset = await loanAccountContract.get_mortgaged_asset();
         let disbursed_asset = await loanAccountContract.get_disbursed_asset();
         console.log(mortgaged_asset);
-        let title, body, amount;
+        let title, body, amount, message;
         switch(event) {
             case "CloseLoanAccount":
                 title = `IMPORTANT MESSAGE FOR ${borrower}`;
@@ -35,22 +35,6 @@ export const processLogs = async (logs: LogDescription[]) => {
                 
                 break;
             case "LoanAccountCreated":
-                title = `IMPORTANT MESSAGE FROM Loan Account ${borrower}`;
-                body = `Loan Account has been created: **${loanAccountContract.address}**.`;
-                await sendNotification([borrower], title, body);
-                title = `IMPORTANT MESSAGE FOR ${lender}`;
-                body = `Loan Account has been created: **${loanAccountContract.address}**.`;
-                await sendNotification([lender], title, body);
-                
-                // sending notifications for approval to all 3 stakeholders
-                title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT`;
-                body = `Kindly approve the above contract for loan disbursement of **${loanAccountContract.address}**`
-                await sendNotification([borrower, lender], title, body);
-                
-                title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT ${loanAccountContract.address}`;
-                body = `Kindly approve the above contract for your asset **${mortgaged_asset._token_id}**`;
-                await sendNotification([assetOwner], title, body);
-
                 // creation of loan account
                 const loanApplication = await getLoanApplicationByLenderBorrower(borrower, lender);
                 const newLoan = {
@@ -66,6 +50,40 @@ export const processLogs = async (logs: LogDescription[]) => {
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }
+                // Notification for borrower
+                title = `IMPORTANT MESSAGE FOR ${borrower}`;
+                message = `Loan Account has been created: **${loanAccountContract.address}**.
+                \nKindly approve the above contract for loan disbursement of **${loanAccountContract.address}**`
+                body = {
+                    type: "erc20",
+                    message: message,
+                    amount: loanApplication.amount * 0.25,
+                    account: loanAccountContract.address
+                };
+                await sendNotification([borrower], title, JSON.stringify(body));
+
+                // Notification for borrower
+                title = `IMPORTANT MESSAGE FOR ${lender}`;
+                message = `Loan Account has been created: **${loanAccountContract.address}**.
+                \nKindly approve the above contract for loan disbursement of **${loanAccountContract.address}**`
+                body = {
+                    type: "erc20",
+                    message: message,
+                    amount: loanApplication.amount,
+                    account: loanAccountContract.address
+                }
+                await sendNotification([lender], title, JSON.stringify(body));
+
+                title = `IMPORTANT MESSAGE FOR ${assetOwner}`;
+                message = `Kindly approve the contract ${loanAccountContract.address} for your asset **${mortgaged_asset["_token_id"]}**`;
+                body = {
+                    type: "erc721",
+                    message: message,
+                    amount: mortgaged_asset["_token_id"],
+                    account: loanAccountContract.address
+                }
+                await sendNotification([assetOwner], title, JSON.stringify(body));
+
                 await mongoose.connection.db.collection(LOANS_COLLECTION).save(newLoan);
                 break;
             case "LoanDisbursed":
