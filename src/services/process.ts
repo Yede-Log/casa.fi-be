@@ -51,6 +51,7 @@ export const processLogs = async (logs: LogDescription[]) => {
 
                 // creation of loan account
                 const loanApplication = await getLoanApplicationByLenderBorrower(borrower, lender);
+                console.log("process", loanApplication);
                 const newLoan = {
                     loanAccount: loanAccountContract.address,
                     lender,
