@@ -1,12 +1,12 @@
 import mongoose from "../config/database";
 
 export interface Loan {
-    _id: mongoose.Types.ObjectId,
+    _id: string,
     loanAccount: string,
     lender: string,
     borrower: string,
-    loanOffer: mongoose.Types.ObjectId,
-    loanApplication: mongoose.Types.ObjectId,
+    loanOffer: string,
+    loanApplication: string,
     status: LoanStatus,
     chainId: number,
     assetId: number 
