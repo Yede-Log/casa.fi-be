@@ -2,7 +2,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import LoanOffer from "../models/LoanOffers";
 import { createLoanOffer, deleteLoanOffer, getAllLoanOffer, getLoanOfferByID, updateLoanOffer } from "../services/loanOffer";
 
 /** Required App Modules */
@@ -22,7 +21,8 @@ export const createLoanOfferController = async (req: Request, res: Response) => 
 
 export const getAllLoanOfferController = async (req: Request, res: Response) => {
     try {
-        const loanOffers = await getAllLoanOffer();
+        
+        const loanOffers = await getAllLoanOffer(String(req.query.address));
         return res.status(200).json(loanOffers);
     } catch (error:any) {
         console.error(error);

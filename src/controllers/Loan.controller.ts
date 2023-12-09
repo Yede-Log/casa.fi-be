@@ -22,7 +22,7 @@ export const createLoanController = async (req: Request, res: Response) => {
 
 export const getAllLoanController = async (req: Request, res: Response) => {
     try {
-        const loans = await getAllLoan();
+        const loans = await getAllLoan(String(req.query.address));
         let modified_loans:any[] = [];
         for(let i = 0; i < loans.length; i++) {
             let loan_offer = await getLoanOfferByID(String(loans[i].loanOffer));

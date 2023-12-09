@@ -13,9 +13,9 @@ export const createLoanOffer = async (offer: LoanOffer) => {
     }
 };
 
-export const getAllLoanOffer = async () => {
+export const getAllLoanOffer = async (user: string) => {
     try {
-        let offers = await mongoose.connection.db.collection(LOAN_OFFERS_COLLECTION).find();
+        let offers = await mongoose.connection.db.collection(LOAN_OFFERS_COLLECTION).find({$or: [ { lender: { $lt: user } }, { borrower: user } ]});
         return offers.toArray() as unknown as LoanOffer[];
     } catch (err:any) {
         console.error(`Error in creating loan: \n${err}`);
