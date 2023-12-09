@@ -63,3 +63,13 @@ export const getLoanApplicationByUser = async (borrower: string) => {
         throw err;
     }
 };
+
+export const getLoanApplicationByLenderBorrower = async(borrower: string, lender: string) => {
+    try {
+        const loanAppilcation = await mongoose.connection.db.collection(LOAN_APPLICATIONS_COLLECTION).find({borrower: borrower, lender: lender});
+        return loanAppilcation as unknown as LoanApplication;
+    } catch (err:any) {
+        console.error(`Error in gettin loan application: \n${err}`);
+        throw err;
+    }
+} 

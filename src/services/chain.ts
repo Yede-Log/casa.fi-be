@@ -4,7 +4,7 @@ import { Chain } from "../interfaces/chain";
 
 export const getAllChains = () => {
     const chains = mongoose.connection.db.collection(CHAINS_COLLECTION).find();
-    return chains as unknown as Chain[];
+    return chains.toArray() as unknown as Chain[];
 }
 
 export const addChain = async (chain: Chain) => {

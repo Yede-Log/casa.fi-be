@@ -52,3 +52,14 @@ export const deleteLoan = async (id: string) => {
         throw err;
     }
 };
+
+export const updateLoanStatus = async (loanAccount: string, status: string) => {
+    try {
+        await mongoose.connection.db.collection(LOANS_COLLECTION).updateOne({ loanAccount: loanAccount}, {$set: {status : status}});
+        let updatedLoan = await mongoose.connection.db.collection(LOANS_COLLECTION).findOne({ loanAccount: loanAccount });
+        return updatedLoan as unknown as Loan;
+    } catch (err:any) {
+        console.error(`Error in fetching all loans: \n${err}`);
+        throw err;
+    }
+};

@@ -4,6 +4,7 @@ export interface LoanApplication {
     _id: mongoose.Types.ObjectId,
     loan_offer: mongoose.Types.ObjectId,
     borrower: string,
+    lender:string,
     reason: string,
     documents: string[],
     assetOwner: string,

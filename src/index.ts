@@ -18,8 +18,10 @@ import userRoutes from "./routes/user.route";
 
 import { poll } from "./services/listener";
 import { LOAN_REGISTRY_CONTRACT_ABI } from "./config/ethers";
-import { addChain } from "./services/chain";
+import { addChain, getAllChains } from "./services/chain";
 import { sendNotification } from "./services/notififcations";
+
+const lighthouse_api_key = process.env.LIGHT_HOUSE
 
 dotenv.config();
 
@@ -33,7 +35,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-
 
 /*
 * allowing access to frontend domain
@@ -79,6 +80,13 @@ app.post("/api/chains", async (request: Request, response: Response) => {     /*
     await addChain(chain);
     response.status(200).json({ chainId: chain.chainId, name: chain.name, rpc: chain.rpc });
 });
+
+
+app.get("/api/chains", async(req: Request, res: Response) => {
+    const chains = await getAllChains();
+    res.status(200).json(chains)
+})
+
 
 /** Server Activation */
 const StartServer = async() => {
