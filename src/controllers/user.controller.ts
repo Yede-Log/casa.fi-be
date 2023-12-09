@@ -2,7 +2,7 @@
 import { Request, Response, application } from "express";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import { getAllUser, getUserByID } from "../services/user";
+import { getAllUser, getUserByID, updateUserIsVerified } from "../services/user";
 import { getLoanApplicationByID, getLoanApplicationByUser } from "../services/loanAppilcation";
 import { getLoanOfferByID } from "../services/loanOffer";
 import { MyLoan } from "../interfaces/myLoan";
@@ -59,11 +59,9 @@ export const getMyLoansController = async (req: Request, res: Response) => {
 
 export const updateIsVerified = async (req: Request, res: Response) => {
     try {
-
         const {userAddress, isVerified} = req.body;
-        // const updatedUser:User = await updateIsVerified(userAddress,isVerified);
-        // return res.status(200).json(updatedUser)
-        
+        const updatedUser = await updateUserIsVerified(userAddress.toString(),isVerified);
+        return res.status(200).json(updatedUser)        
     } catch (error:any) {
         return res.status(400).json({ error: error.message });
     }

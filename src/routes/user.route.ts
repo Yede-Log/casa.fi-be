@@ -5,7 +5,8 @@ import express from "express";
 import { 
      getAllUsersController,
      getUserByIDController,
-     getMyLoansController
+     getMyLoansController,
+     updateIsVerified
 } from "../controllers/user.controller";
 
 let router = express.Router();
@@ -17,5 +18,6 @@ let router = express.Router();
 router.get("/", getAllUsersController);
 router.get("/:id", getUserByIDController);
 router.get("/myloans/:id",getMyLoansController);
+router.post("/verify/", updateIsVerified)
 
 export default router;
