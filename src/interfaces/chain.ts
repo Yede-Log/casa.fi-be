@@ -14,6 +14,5 @@ export interface Chain {
 
 export interface Contract {
     name: string
-    address: string,
-    abi: ethers.ContractInterface
+    address: string
 }

@@ -15,8 +15,7 @@ export const addContract = async (chainId: number, name: string, address: string
     let chain = mongoose.connection.db.collection(CHAINS_COLLECTION).findOne({ "chainId": chainId }) as unknown as Chain;
     chain.contracts.push({
         name: name,
-        address: address,
-        abi: contract
+        address: address
     });
     await mongoose.connection.db.collection(CHAINS_COLLECTION).save(chain);
 }
