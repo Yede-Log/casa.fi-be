@@ -12,6 +12,7 @@ export const processLogs = async (logs: LogDescription[]) => {
     for(const log of logs) {
         let event = decodeTopic0(log.topic);
         console.log(`Received event ${event}`);
+        console.log(`Log: ${JSON.stringify(log)}`); 
         let loanAccountContract = getContract(log.args[0], LOAN_ACCOUNT_CONTRACT_ABI);
         let borrower = await loanAccountContract._borrower();
         let lender = await loanAccountContract._lender();
@@ -52,8 +53,8 @@ export const processLogs = async (logs: LogDescription[]) => {
 
                 // creation of loan account
                 const loanApplication = await getLoanApplicationByLenderBorrower(borrower, lender);
-                console.log("process", loanApplication);
                 const newLoan = {
+                    _id: loanAccountContract.address,
                     loanAccount: loanAccountContract.address,
                     lender,
                     borrower,
@@ -65,7 +66,7 @@ export const processLogs = async (logs: LogDescription[]) => {
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }
-                await mongoose.connection.db.collection(LOANS_COLLECTION).insertOne(newLoan);
+                await mongoose.connection.db.collection(LOANS_COLLECTION).save(newLoan);
                 break;
             case "LoanDisbursed":
                 amount = log.args[1].toNumber();
