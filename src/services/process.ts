@@ -6,7 +6,8 @@ import { LOAN_ACCOUNT_CONTRACT_ABI, getContract } from "../config/ethers";
 import { sendNotification } from "./notififcations";
 import mongoose, { LOANS_COLLECTION } from "../config/database";
 import { updateLoanStatus } from "./loan";
-import { getLoanApplicationByLenderBorrower } from "./loanAppilcation";
+import { getLoanApplicationByLenderBorrower, updateLoanApplication } from "./loanAppilcation";
+import { LoanApplicationStatus } from "../interfaces/loanApplication";
 
 export const processLogs = async (logs: LogDescription[]) => {
     for(const log of logs) {
@@ -37,6 +38,7 @@ export const processLogs = async (logs: LogDescription[]) => {
             case "LoanAccountCreated":
                 // creation of loan account
                 const loanApplication = await getLoanApplicationByLenderBorrower(borrower, lender);
+
                 const newLoan = {
                     _id: loanAccountContract.address,
                     loanAccount: loanAccountContract.address,
@@ -62,7 +64,7 @@ export const processLogs = async (logs: LogDescription[]) => {
                 };
                 await sendNotification([borrower], title, JSON.stringify(body));
 
-                // Notification for borrower
+                // Notification for lender
                 title = `IMPORTANT MESSAGE FOR ${lender}`;
                 message = `Loan Account has been created: **${loanAccountContract.address}**.
                 \nKindly approve the above contract for loan disbursement of **${loanAccountContract.address}**`
@@ -84,7 +86,9 @@ export const processLogs = async (logs: LogDescription[]) => {
                 }
                 await sendNotification([assetOwner], title, JSON.stringify(body));
 
+                await updateLoanApplication(String(loanApplication._id), { ...loanApplication,status: LoanApplicationStatus.ACCEPTED})
                 await mongoose.connection.db.collection(LOANS_COLLECTION).save(newLoan);
+                
                 break;
             case "LoanDisbursed":
                 amount = log.args[1].toNumber();

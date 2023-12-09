@@ -17,7 +17,7 @@ export interface LoanApplication {
     updatedAt: Date,
 }
 
-enum LoanApplicationStatus {
+export enum LoanApplicationStatus {
     PENDING,
     ACCEPTED,
     REJECTED
