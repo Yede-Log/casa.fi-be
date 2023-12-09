@@ -13,9 +13,9 @@ export const createLoanApplication = async (loanApplication: LoanApplication) =>
     }
 };
 
-export const getAllLoanApplications = async () => {
+export const getAllLoanApplications = async (lender:string) => {
     try {
-        let loanApplications = await mongoose.connection.db.collection(LOAN_APPLICATIONS_COLLECTION).find();
+        let loanApplications = await mongoose.connection.db.collection(LOAN_APPLICATIONS_COLLECTION).find({lender: lender});
         return loanApplications.toArray() as unknown as LoanApplication[];
     } catch (err:any) {
         console.error(`Error in creating loan: \n${err}`);

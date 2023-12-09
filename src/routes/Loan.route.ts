@@ -18,7 +18,7 @@ let router = express.Router();
 router.post("/create", createLoanController);
 
 // get all and by id 
-router.get("/", getAllLoanController);
+router.get("/:lender", getAllLoanController);
 router.get("/:id", getLoanByIDController);
 
 // update a loan

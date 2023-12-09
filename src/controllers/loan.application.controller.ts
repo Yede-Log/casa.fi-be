@@ -24,7 +24,7 @@ export const createLoanApplicationController = async (req: Request, res: Respons
 
 export const getAllLoanApplicationsController = async (req: Request, res: Response) => {
     try {
-        const loanApplications = await getAllLoanApplications();
+        const loanApplications = await getAllLoanApplications(String(req.query.address));
         return res.status(200).json(loanApplications);
     } catch (error:any) {
         return res.status(400).json({ error: error.message });
