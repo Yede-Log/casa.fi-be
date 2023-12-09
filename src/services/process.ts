@@ -8,6 +8,7 @@ import mongoose, { LOANS_COLLECTION } from "../config/database";
 import { updateLoanStatus } from "./loan";
 import { getLoanApplicationByLenderBorrower, updateLoanApplication } from "./loanAppilcation";
 import { LoanApplicationStatus } from "../interfaces/loanApplication";
+import { getLoanOfferByID } from "./loanOffer";
 
 export const processLogs = async (logs: LogDescription[]) => {
     for(const log of logs) {
@@ -40,7 +41,7 @@ export const processLogs = async (logs: LogDescription[]) => {
             case "LoanAccountCreated":
                 // creation of loan account
                 const loanApplication = await getLoanApplicationByLenderBorrower(borrower, lender);
-
+                const loanOffer = await getLoanOfferByID(String(loanApplication.loan_offer));
                 const newLoan = {
                     _id: loanAccountContract.address,
                     loanAccount: loanAccountContract.address,
@@ -100,7 +101,7 @@ export const processLogs = async (logs: LogDescription[]) => {
                     account: loanAccountContract.address,
                     time_period: loanApplication.tenure,
                     payment_interval,
-                    interest_rate
+                    interest_rate:loanOffer.interestRate,
                 }
                 await sendNotification([lender], title, JSON.stringify(body));                
 
