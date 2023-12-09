@@ -60,7 +60,7 @@ export const processLogs = async (logs: LogDescription[]) => {
                     loanApplication: loanApplication._id,
                     status: "NEW",
                     chainId: loanApplication.chainId,
-                    assetId: loanApplication.assetId, 
+                    assetId: mortgaged_asset["_token_id"].toNumber(), 
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }
