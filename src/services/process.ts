@@ -19,7 +19,9 @@ export const processLogs = async (logs: LogDescription[]) => {
         let lender = await loanAccountContract._lender();
         let assetOwner = await loanAccountContract._asset_owner();
         let mortgaged_asset = await loanAccountContract.get_mortgaged_asset();
-        let disbursed_asset = await loanAccountContract.get_disbursed_asset();
+        let disbursed_token_asset = await loanAccountContract.get_disbursed_asset();
+        let payment_interval = await loanAccountContract._payment_interval();
+        let interest_rate = await loanAccountContract._interest_rate();
         console.log(mortgaged_asset);
         let title, body, amount, message;
         switch(event) {
@@ -71,8 +73,11 @@ export const processLogs = async (logs: LogDescription[]) => {
                 body = {
                     type: "erc20",
                     message: message,
-                    amount: loanApplication.amount,
-                    account: loanAccountContract.address
+                    amount: disbursed_token_asset["_disbursed_amount"].toNumber(),
+                    account: loanAccountContract.address,
+                    time_period: loanApplication.tenure,
+                    payment_interval,
+                    interest_rate
                 }
                 await sendNotification([lender], title, JSON.stringify(body));
 
@@ -85,6 +90,18 @@ export const processLogs = async (logs: LogDescription[]) => {
                     account: loanAccountContract.address
                 }
                 await sendNotification([assetOwner], title, JSON.stringify(body));
+
+                title = `IMPORTANT MESSAGE FOR ${lender}`;
+                message = `Kindly start disbursement of the following loan account: **${loanAccountContract.address}**.
+                \nKindly approve the above contract for loan disbursement of **${loanAccountContract.address}**`
+                body = {
+                    type: "disburse",
+                    message: message,
+                    amount: loanApplication.amount,
+                    account: loanAccountContract.address
+                }
+                await sendNotification([lender], title, JSON.stringify(body));                
+
 
                 await updateLoanApplication(String(loanApplication._id), { ...loanApplication,status: LoanApplicationStatus.ACCEPTED})
                 await mongoose.connection.db.collection(LOANS_COLLECTION).save(newLoan);
@@ -102,6 +119,7 @@ export const processLogs = async (logs: LogDescription[]) => {
 
                 break;
             case "LoanPayment":
+                amount = log.args[1].toNumber();
                 title = `IMPORTANT MESSAGE FROM LOAN ACCOUNT: ${loanAccountContract.address}`;
                 body = `Loan repayment received: ${amount} in account: **${loanAccountContract.address}**.`;
                 await sendNotification([borrower, lender], title, body);
