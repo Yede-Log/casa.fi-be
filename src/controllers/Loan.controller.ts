@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { createLoan, deleteLoan, getAllLoan, getLoanByID, updateLoan } from "../services/loan";
+import { getLoanOfferByID } from "../services/loanOffer";
+
 
 /** Required App Modules */
 dotenv.config();
@@ -21,7 +23,17 @@ export const createLoanController = async (req: Request, res: Response) => {
 export const getAllLoanController = async (req: Request, res: Response) => {
     try {
         const loans = await getAllLoan();
-        return res.status(200).json(loans);
+        let modified_loans:any[] = [];
+        for(let i = 0; i < loans.length; i++) {
+            let loan_offer = await getLoanOfferByID(String(loans[i].loanOffer));
+            modified_loans.push({
+                ...loans[i],
+                interestRate: loan_offer.interestRate,
+                maxTenure: loan_offer.maxTenure,
+                maxAmount: loan_offer.maxAmount,    
+            })
+        }
+        return res.status(200).json(modified_loans);
     } catch (error:any) {
         return res.status(400).json({ error: error.message });
     }
