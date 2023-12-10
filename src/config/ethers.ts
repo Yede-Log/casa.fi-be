@@ -3,16 +3,16 @@ import { ethers } from "ethers";
 
 dotenv.config();
 
-export const getProvider = () => {
-    return new ethers.providers.JsonRpcProvider("https://polygon-mumbai-pokt.nodies.app");
+export const getProvider = (rpc: string) => {
+    return new ethers.providers.JsonRpcProvider(rpc);
 }
 
-export const getSigner = () => {
-    return new ethers.Wallet(process.env.ACCOUNT_PRIVATE_KEY ?? "", getProvider());
+export const getSigner = (rpc: string) => {
+    return new ethers.Wallet(process.env.ACCOUNT_PRIVATE_KEY ?? "", getProvider(rpc));
 }
 
-export const getContract = ( address: string, abi: ethers.ContractInterface) => {
-    return new ethers.Contract(address, abi, getSigner());
+export const getContract = ( address: string, abi: ethers.ContractInterface, rpc: string) => {
+    return new ethers.Contract(address, abi, getSigner(rpc));
 }
 
 export const LOAN_REGISTRY_CONTRACT_ABI = [

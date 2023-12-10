@@ -55,16 +55,6 @@ app.get("/api/healthcheck", (req, res) => {
   return res.status(200).json(message);
 })
 
-app.post("/api/notifications", async (request: Request, response: Response) => {
-    let recipients = request.body.recipients as string[];
-    let title = request.body.title as string;
-    let body = request.body.body as string;
-
-    let res = await sendNotification(recipients, title, body);
-    response.status(200).json(res);
-});
-
-
 app.post("/api/chains", async (request: Request, response: Response) => {     /** Testing done  */
     const chain = {
         _id: new mongoose.Types.ObjectId(request.body.chainId),
@@ -99,13 +89,14 @@ const StartServer = async() => {
     console.log(`Listening on port ${PORT}`);
   });
 
-  const name="LoanRegistry"
-  const chain = await getChain(80001);
-  const contractIndex = await chain.contracts.findIndex((chainContract) => chainContract.name === name);
+    let chains = await getAllChains();
+    const name="LoanRegistry"
 
-  let latestBlock = await getProvider().getBlockNumber()
-  await poll(chain.contracts[contractIndex].address, LOAN_REGISTRY_CONTRACT_ABI, 10000, latestBlock);
-
+    for (let chain of chains) {
+        const contractIndex = await chain.contracts.findIndex((chainContract) => chainContract.name === name);
+        let latestBlock = await getProvider(chain.rpc).getBlockNumber()
+        await poll(chain.contracts[contractIndex].address, LOAN_REGISTRY_CONTRACT_ABI, 10000, latestBlock, chain.rpc);
+    }
 }
 
 StartServer();

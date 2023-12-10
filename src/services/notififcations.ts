@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { getPushSigner } from "../config/notification";
 
-export const sendNotification = async (recipients: string[], title: string, body: string) => {
-    const signer = await getPushSigner();
+export const sendNotification = async (recipients: string[], title: string, body: string, rpc: string) => {
+    const signer = await getPushSigner(rpc);
     signer.channel.send(
         recipients, 
         {
