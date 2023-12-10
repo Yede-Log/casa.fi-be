@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { createLoanOffer, deleteLoanOffer, getAllLoanOffer, getLoanOfferByID, updateLoanOffer } from "../services/loanOffer";
+import { sendNotification } from "../services/notififcations";
+import { getChain } from "../services/chain";
 
 /** Required App Modules */
 dotenv.config();
@@ -10,8 +12,10 @@ dotenv.config();
 export const createLoanOfferController = async (req: Request, res: Response) => {
     try {
         req.body.createdAt = new Date();
-        req.body.updatedAt = new Date(); 
+        req.body.updatedAt = new Date();
+        let chain = await getChain(req.body.chainId); 
         await createLoanOffer(req.body);
+        sendNotification(['*'], "New Loan Offer Available", `Loan Offer at interest: ${req.body.interestRate}`, chain.rpc, 1);
         return res.status(200).json(req.body);
     } catch (error:any) {
         console.error(error);
