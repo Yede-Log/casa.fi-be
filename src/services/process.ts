@@ -103,7 +103,7 @@ export const processLogs = async (logs: LogDescription[], rpc: string) => {
                     payment_interval,
                     interest_rate:loanOffer.interestRate * 100,
                 }
-                await sendNotification([lender], title, JSON.stringify(body));                
+                await sendNotification([lender], title, JSON.stringify(body), rpc);                
 
 
                 await updateLoanApplication(String(loanApplication._id), { ...loanApplication,status: LoanApplicationStatus.ACCEPTED})
