@@ -93,9 +93,14 @@ const StartServer = async() => {
     const name="LoanRegistry"
 
     for (let chain of chains) {
-        const contractIndex = await chain.contracts.findIndex((chainContract) => chainContract.name === name);
-        let latestBlock = await getProvider(chain.rpc).getBlockNumber()
-        await poll(chain.contracts[contractIndex].address, LOAN_REGISTRY_CONTRACT_ABI, 10000, latestBlock, chain.rpc);
+        try {
+          const contractIndex = await chain.contracts.findIndex((chainContract) => chainContract.name === name);
+          let latestBlock = await getProvider(chain.rpc).getBlockNumber()
+          await poll(chain.contracts[contractIndex].address, LOAN_REGISTRY_CONTRACT_ABI, 10000, latestBlock, chain);
+          
+        } catch (error) {
+          console.log(`Caught Error for chain: ${chain.name} error: ${error}`);          
+        }
     }
 }
 
